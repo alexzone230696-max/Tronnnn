@@ -1,20 +1,40 @@
 {
   "name": "tron-wallet",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
+    "dev": "next dev --turbopack",
+    "build": "next build --turbopack",
+    "start": "next start",
+    "lint": "eslint"
   },
   "dependencies": {
-    "next": "13.5.1",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "tronweb": "^4.4.0",
-    "core-js": "^3.32.2"
+    "@lottiefiles/react-lottie-player": "^3.6.0",
+    "canvas-confetti": "^1.9.3",
+    "crypto-js": "^4.2.0",
+    "framer-motion": "^12.23.22",
+    "iconoir-react": "^7.11.0",
+    "lottie-react": "^2.4.1",
+    "next": "15.5.4",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "sonner": "^2.0.7",
+    "tronweb": "^3.0.0",
+    "core-js": "^3.32.2",
+    "qr-code-styling": "^1.9.2"
   },
   "devDependencies": {
-    "typescript": "^5.2.2"
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/canvas-confetti": "^1.9.0",
+    "@types/crypto-js": "^4.2.2",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "cloudflared": "^0.7.1",
+    "eslint": "^9",
+    "eslint-config-next": "15.5.4",
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }
