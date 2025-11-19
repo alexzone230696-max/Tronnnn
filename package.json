@@ -19,7 +19,7 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "sonner": "^2.0.7",
-    "tronweb": "^3.0.0",
+    "tronweb": "^4.4.0",
     "core-js": "^3.32.2",
     "qr-code-styling": "^1.9.2"
   },
