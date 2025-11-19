@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
-// импортируем без типов
 import TronWeb from 'tronweb';
+import { Player } from '@lottiefiles/react-lottie-player';
+import { motion } from 'framer-motion';
+import confetti from 'canvas-confetti';
 
 export default function Home() {
-  const [tronWeb, setTronWeb] = useState<any>(null); // any вместо TronWeb
+  const [tronWeb, setTronWeb] = useState<any>(null);
   const [wallet, setWallet] = useState<any>(null);
   const [balance, setBalance] = useState<number | null>(null);
+  const [to, setTo] = useState('');
+  const [amount, setAmount] = useState('');
 
   useEffect(() => {
     const initTron = async () => {
@@ -13,6 +17,14 @@ export default function Home() {
         fullHost: process.env.NEXT_PUBLIC_TRON_HOST || 'https://api.shasta.trongrid.io'
       });
       setTronWeb(tw);
+
+      const stored = localStorage.getItem('tronWallet');
+      if (stored) {
+        const w = JSON.parse(stored);
+        setWallet(w);
+        const bal = await tw.trx.getBalance(w.address.base58);
+        setBalance(bal / 1_000_000);
+      }
     };
     initTron();
   }, []);
@@ -24,52 +36,98 @@ export default function Home() {
     localStorage.setItem('tronWallet', JSON.stringify(account));
     const bal = await tronWeb.trx.getBalance(account.address.base58);
     setBalance(bal / 1_000_000);
+
+    // Конфетти при создании кошелька
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 }
+    });
   };
 
-  const sendTRX = async (to: string, amountTRX: number) => {
+  const sendTRX = async () => {
     if (!tronWeb || !wallet) return;
     try {
       const trade = await tronWeb.trx.sendTransaction(
         to,
-        amountTRX * 1_000_000,
+        parseFloat(amount) * 1_000_000,
         wallet.address.base58
       );
       alert('Tx ID: ' + trade.txid);
+      setAmount('');
+      setTo('');
     } catch (err) {
       alert('Error sending TRX: ' + err);
     }
   };
 
   return (
-    <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-      <h1>TRON Wallet</h1>
-      <button onClick={createWallet}>Create Wallet</button>
+    <div className="min-h-screen bg-gradient-to-r from-purple-500 to-indigo-600 flex flex-col items-center justify-center p-4 text-white">
+      <motion.h1
+        className="text-4xl font-bold mb-6"
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6 }}
+      >
+        TRON Wallet
+      </motion.h1>
+
+      <Player
+        autoplay
+        loop
+        src="https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json"
+        style={{ height: 200, width: 200 }}
+      />
+
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={createWallet}
+        className="bg-yellow-400 text-black font-bold py-3 px-6 rounded-lg mt-6 shadow-lg"
+      >
+        Create Wallet
+      </motion.button>
 
       {wallet && (
-        <div style={{ marginTop: '1rem' }}>
+        <motion.div
+          className="bg-white text-black rounded-xl p-6 mt-6 w-full max-w-md shadow-xl"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
           <p><strong>Address:</strong> {wallet.address.base58}</p>
           <p><strong>Private Key:</strong> {wallet.privateKey}</p>
           <p><strong>Balance:</strong> {balance} TRX</p>
-        </div>
+        </motion.div>
       )}
 
       {wallet && (
-        <div style={{ marginTop: '1rem' }}>
-          <input id="to" placeholder="Receiver Address" />
-          <input id="amount" placeholder="Amount TRX" type="number" />
-          <button
-            onClick={() =>
-              sendTRX(
-                (document.getElementById('to') as HTMLInputElement).value,
-                parseFloat(
-                  (document.getElementById('amount') as HTMLInputElement).value
-                )
-              )
-            }
+        <motion.div
+          className="bg-white text-black rounded-xl p-6 mt-6 w-full max-w-md shadow-xl flex flex-col gap-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
+          <input
+            placeholder="Receiver Address"
+            className="p-3 border rounded-lg"
+            value={to}
+            onChange={(e) => setTo(e.target.value)}
+          />
+          <input
+            placeholder="Amount TRX"
+            type="number"
+            className="p-3 border rounded-lg"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+          />
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={sendTRX}
+            className="bg-purple-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg"
           >
             Send TRX
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
       )}
     </div>
   );
