@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
-// @ts-ignore
+// импортируем без типов
 import TronWeb from 'tronweb';
 
 export default function Home() {
-  const [tronWeb, setTronWeb] = useState<any>(null);
-  const [wallet, setWallet] = useState<{ address: { base58: string }; privateKey: string } | null>(null);
+  const [tronWeb, setTronWeb] = useState<any>(null); // any вместо TronWeb
+  const [wallet, setWallet] = useState<any>(null);
   const [balance, setBalance] = useState<number | null>(null);
 
   useEffect(() => {
     const initTron = async () => {
       const tw = new TronWeb({
-        fullHost: 'https://api.shasta.trongrid.io'
+        fullHost: process.env.NEXT_PUBLIC_TRON_HOST || 'https://api.shasta.trongrid.io'
       });
       setTronWeb(tw);
     };
@@ -21,6 +21,7 @@ export default function Home() {
     if (!tronWeb) return;
     const account = await tronWeb.createAccount();
     setWallet(account);
+    localStorage.setItem('tronWallet', JSON.stringify(account));
     const bal = await tronWeb.trx.getBalance(account.address.base58);
     setBalance(bal / 1_000_000);
   };
