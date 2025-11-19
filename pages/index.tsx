@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import TronWeb from 'tronweb';
 
 export default function Home() {
-  const [tronWeb, setTronWeb] = useState<TronWeb | null>(null);
+  const [tronWeb, setTronWeb] = useState<any>(null);
   const [wallet, setWallet] = useState<{ address: { base58: string }; privateKey: string } | null>(null);
   const [balance, setBalance] = useState<number | null>(null);
 
