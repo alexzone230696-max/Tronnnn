@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+// @ts-ignore
 import TronWeb from 'tronweb';
 
 export default function Home() {
